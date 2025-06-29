@@ -16,7 +16,7 @@ MediaPanel::MediaPanel(QWidget *parent) :
 {
   int row = 0;
 
-  auto wav_group = new QGroupBox(tr("Playback"));
+  auto wav_group = new QGroupBox(tr("Reproducción"));
   layout()->addWidget(wav_group, row, 0, 1, 2);
 
   auto preview_layout = new QVBoxLayout(wav_group);
@@ -42,7 +42,7 @@ MediaPanel::MediaPanel(QWidget *parent) :
   connect(m_PlayheadSlider, &QSlider::sliderReleased, this, &MediaPanel::SliderReleased);
   ctrl_layout->addWidget(m_PlayheadSlider);
 
-  m_PlayBtn = new QPushButton(tr("Play"));
+  m_PlayBtn = new QPushButton(tr("Reproducir"));
   m_PlayBtn->setCheckable(true);
   m_PlayShortcut = new QShortcut(QKeySequence(Qt::Key_Space), this);
   connect(m_PlayBtn, &QPushButton::clicked, this, &MediaPanel::Play);
@@ -432,9 +432,9 @@ void MediaPanel::Play(bool e)
 
     m_PlaybackStart = QDateTime::currentMSecsSinceEpoch();
     m_PlaybackTimer->start();
-    m_PlayBtn->setText("Pause");
+    m_PlayBtn->setText("Pausar");
   } else {
-    m_PlayBtn->setText("Play");
+    m_PlayBtn->setText("Reproducir");
     m_PlaybackTimer->stop();
 
     if (m_audioSink) {
@@ -514,7 +514,7 @@ void MediaPanel::LabelContextMenuTriggered(const QPoint &pos)
 
   QObject *s = sender();
 
-  auto vert_flip = m.addAction(tr("Flip Vertically"));
+  auto vert_flip = m.addAction(tr("Girar verticalmente"));
   vert_flip->setCheckable(true);
   vert_flip->setChecked(s->property("vflip").toBool());
   connect(vert_flip, &QAction::triggered, this, [this, s](bool e){
@@ -579,19 +579,19 @@ void MediaInstance::Open(const si::bytearray &buf)
   m_FmtCtx->flags |= AVFMT_FLAG_CUSTOM_IO;
 
   if (avformat_open_input(&m_FmtCtx, "", nullptr, nullptr) < 0) {
-    qCritical() << "Failed to open format context";
+    qCritical() << "Ocurrió un error al abrir el contexto del formato";
     Close();
     return;
   }
 
   if (avformat_find_stream_info(m_FmtCtx, nullptr) < 0) {
-    qCritical() << "Failed to find stream info";
+    qCritical() << "Ocurrió un error al encontrar información del stream";
     Close();
     return;
   }
 
   if (m_FmtCtx->nb_streams == 0) {
-    qWarning() << "No streams in file";
+    qWarning() << "No hay streams en el archivo";
     Close();
     return;
   }
@@ -607,7 +607,7 @@ void MediaInstance::Open(const si::bytearray &buf)
 
   const AVCodec *decoder = avcodec_find_decoder(m_Stream->codecpar->codec_id);
   if (!decoder) {
-    qWarning() << "Failed to find decoder for type" << avcodec_get_name(m_Stream->codecpar->codec_id);
+    qWarning() << "Ocurrió un error al encontrar un decodificador para el tipo" << avcodec_get_name(m_Stream->codecpar->codec_id);
     Close();
     return;
   }
@@ -721,7 +721,7 @@ bool MediaInstance::SetUpResampleContext(const QAudioFormat &fmt)
                               m_Stream->codecpar->sample_rate,
                               0, nullptr);
   if (r < 0) {
-    qCritical() << "Failed to alloc swr ctx:" << r;
+    qCritical() << "Ocurrió un error al asignar el contexto de Swresample:" << r;
     return false;
   }
 #else
@@ -734,13 +734,13 @@ bool MediaInstance::SetUpResampleContext(const QAudioFormat &fmt)
                                 m_Stream->codecpar->sample_rate,
                                 0, nullptr);
   if (!m_SwrCtx) {
-    qCritical() << "Failed to alloc swr ctx";
+    qCritical() << "Ocurrió un error al asignar el contexto de Swresample";
     return false;
   }
 #endif
 
   if (swr_init(m_SwrCtx) < 0) {
-      qCritical() << "Failed to init swr ctx";
+      qCritical() << "Ocurrió un error al asignar el contexto de Swresample";
       return false;
   }
 

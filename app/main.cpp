@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
 
   QCommandLineParser parser;
   parser.addPositionalArgument(QCoreApplication::translate("main", "file"),
-                               QCoreApplication::translate("main", "The file to open on startup."));
+                               QCoreApplication::translate("main", "El archivo a abrir en el inicio."));
 
   parser.process(a);
 

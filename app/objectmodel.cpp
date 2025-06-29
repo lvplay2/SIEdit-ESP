@@ -53,7 +53,7 @@ QVariant ObjectModel::headerData(int section, Qt::Orientation orientation, int r
     case kColIndex:
       return tr("Index");
     case kColName:
-      return tr("Name");
+      return tr("Nombre");
     }
   }
 

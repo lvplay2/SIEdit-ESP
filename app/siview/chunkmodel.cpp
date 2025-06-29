@@ -56,15 +56,15 @@ QVariant ChunkModel::headerData(int section, Qt::Orientation orientation, int ro
   if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
     switch (section) {
     case kColType:
-      return tr("Type");
+      return tr("Tipo");
     case kColOffset:
       return tr("Offset");
     case kColSize:
-      return tr("Size");
+      return tr("Tamaño");
     case kColDesc:
-      return tr("Description");
+      return tr("Descripción");
     case kColObjectID:
-      return tr("Object ID");
+      return tr("ID");
     }
   }
 

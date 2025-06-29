@@ -19,7 +19,7 @@ InfoPanel::InfoPanel(QWidget *parent) :
 
   row++;
 
-  m_ShowDataBtn = new QPushButton(tr("Show Data"));
+  m_ShowDataBtn = new QPushButton(tr("Mostrar datos"));
   connect(m_ShowDataBtn, &QPushButton::clicked, this, &InfoPanel::ShowData);
   layout()->addWidget(m_ShowDataBtn, row, 0);
   m_ShowDataBtn->hide();

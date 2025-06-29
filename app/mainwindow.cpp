@@ -10,7 +10,7 @@
 
 using namespace si;
 
-const QString MainWindow::kFileFilter = tr("Interleaf Files (*.si)");
+const QString MainWindow::kFileFilter = tr("Archivos intercalados (*.si)");
 
 MainWindow::MainWindow(QWidget *parent) :
   QMainWindow{parent},
@@ -39,11 +39,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
   action_layout->addStretch();
 
-  auto extract_btn = new QPushButton(tr("Extract"));
+  auto extract_btn = new QPushButton(tr("Extraer"));
   action_layout->addWidget(extract_btn);
   connect(extract_btn, &QPushButton::clicked, this, &MainWindow::ExtractClicked);
 
-  auto replace_btn = new QPushButton(tr("Replace"));
+  auto replace_btn = new QPushButton(tr("Reemplazar"));
   action_layout->addWidget(replace_btn);
   connect(replace_btn, &QPushButton::clicked, this, &MainWindow::ReplaceClicked);
 
@@ -75,7 +75,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     prow++;
 
-    properties_layout->addWidget(new QLabel(tr("Location")), prow, 0);
+    properties_layout->addWidget(new QLabel(tr("Ubicación")), prow, 0);
 
     m_LocationEdit = new Vector3Edit();
     connect(m_LocationEdit, &Vector3Edit::changed, this, &MainWindow::LocationChanged);
@@ -83,7 +83,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     prow++;
 
-    properties_layout->addWidget(new QLabel(tr("Up")), prow, 0);
+    properties_layout->addWidget(new QLabel(tr("Arriba")), prow, 0);
 
     m_UpEdit = new Vector3Edit();
     connect(m_UpEdit, &Vector3Edit::changed, this, &MainWindow::UpChanged);
@@ -91,7 +91,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     prow++;
 
-    properties_layout->addWidget(new QLabel(tr("Start Time")), prow, 0);
+    properties_layout->addWidget(new QLabel(tr("Tiempo de inicio")), prow, 0);
 
     start_time_edit_ = new QSpinBox();
     start_time_edit_->setMinimum(0);
@@ -104,7 +104,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
   splitter->setSizes({99999, 99999});
 
-  setWindowTitle(tr("SI Editor"));
+  setWindowTitle(tr("Editor SI"));
 
   SetPanel(panel_blank_, nullptr);
 }
@@ -126,25 +126,25 @@ void MainWindow::InitializeMenuBar()
 {
   auto menubar = new QMenuBar();
 
-  auto file_menu = menubar->addMenu(tr("&File"));
+  auto file_menu = menubar->addMenu(tr("&Archivo"));
 
-  file_menu->addAction(tr("&New"), tr("Ctrl+N"), this, &MainWindow::NewFile);
+  file_menu->addAction(tr("&Nuevo"), tr("Ctrl+N"), this, &MainWindow::NewFile);
 
-  file_menu->addAction(tr("&Open"), tr("Ctrl+O"), this, &MainWindow::OpenFile);
+  file_menu->addAction(tr("&Abrir"), tr("Ctrl+O"), this, &MainWindow::OpenFile);
 
-  file_menu->addAction(tr("&Save"), tr("Ctrl+S"), this, &MainWindow::SaveFile);
+  file_menu->addAction(tr("&Guardar"), tr("Ctrl+S"), this, &MainWindow::SaveFile);
 
-  file_menu->addAction(tr("Save &As"), tr("Ctrl+Shift+S"), this, &MainWindow::SaveFileAs);
-
-  file_menu->addSeparator();
-
-  file_menu->addAction(tr("&View SI File"), tr("Ctrl+I"), this, &MainWindow::ViewSIFile);
-
-  file_menu->addAction(tr("E&xtract All"), this, &MainWindow::ExtractAll);
+  file_menu->addAction(tr("Guardar &como"), tr("Ctrl+Shift+S"), this, &MainWindow::SaveFileAs);
 
   file_menu->addSeparator();
 
-  file_menu->addAction(tr("E&xit"), this, &MainWindow::close);
+  file_menu->addAction(tr("&Ver archivo SI"), tr("Ctrl+I"), this, &MainWindow::ViewSIFile);
+
+  file_menu->addAction(tr("E&xtraer todo"), this, &MainWindow::ExtractAll);
+
+  file_menu->addSeparator();
+
+  file_menu->addAction(tr("S&alir"), this, &MainWindow::close);
 
   setMenuBar(menubar);
 }
@@ -192,7 +192,7 @@ void MainWindow::ExtractObject(si::Object *obj)
     }
   }
 
-  QString s = QFileDialog::getSaveFileName(this, tr("Export Object"), filename);
+  QString s = QFileDialog::getSaveFileName(this, tr("Exportar objeto"), filename);
   if (!s.isEmpty()) {
     if (!obj->ExtractToFile(
 #ifdef Q_OS_WINDOWS
@@ -201,14 +201,14 @@ void MainWindow::ExtractObject(si::Object *obj)
           s.toUtf8()
 #endif
           )) {
-      QMessageBox::critical(this, QString(), tr("Failed to write to file \"%1\".").arg(s));
+      QMessageBox::critical(this, QString(), tr("Ocurrió un error al escribir el archivo \"%1\".").arg(s));
     }
   }
 }
 
 void MainWindow::ReplaceObject(si::Object *obj)
 {
-  QString s = QFileDialog::getOpenFileName(this, tr("Replace Object"));
+  QString s = QFileDialog::getOpenFileName(this, tr("Reemplazar objeto"));
   if (!s.isEmpty()) {
     if (obj->ReplaceWithFile(
 #ifdef Q_OS_WINDOWS
@@ -219,7 +219,7 @@ void MainWindow::ReplaceObject(si::Object *obj)
         )) {
       static_cast<Panel*>(config_stack_->currentWidget())->ResetData();
     } else {
-      QMessageBox::critical(this, QString(), tr("Failed to open to file \"%1\".").arg(s));
+      QMessageBox::critical(this, QString(), tr("Ocurrió un error al abrir el archivo \"%1\".").arg(s));
     }
   }
 }
@@ -237,7 +237,7 @@ bool MainWindow::OpenInterleafFileInternal(QWidget *parent, si::Interleaf *inter
   if (r == Interleaf::ERROR_SUCCESS) {
     return true;
   } else {
-    QMessageBox::critical(parent, QString(), tr("Failed to load Interleaf file: %1").arg(r));
+    QMessageBox::critical(parent, QString(), tr("Ocurrió un error al abrir el archivo SI: %1").arg(r));
     return false;
   }
 }
@@ -250,7 +250,7 @@ QString MainWindow::GetOpenFileName()
 bool MainWindow::ExtractAllRecursiveInternal(const QDir &dir, const si::Core *obj)
 {
   if (!dir.mkpath(QStringLiteral("."))) {
-    QMessageBox::critical(this, tr("Extract All Failed"), tr("Failed to create directory \"%1\". Try extracting somewhere else.").arg(dir.absolutePath()));
+    QMessageBox::critical(this, tr("Ocurrió un error al extraer todo"), tr("Ocurrió un error al crear la carpeta \"%1\". Intenta extraerlo en otro lado.").arg(dir.absolutePath()));
     return false;
   }
 
@@ -263,7 +263,7 @@ bool MainWindow::ExtractAllRecursiveInternal(const QDir &dir, const si::Core *ob
         QString output = dir.filePath(realFilename);
 
         if (!obj->ExtractToFile(output.toUtf8())) {
-          QMessageBox::critical(this, tr("Extract All Failed"), tr("Failed to create file \"%1\". Try extracting somewhere else.").arg(output));
+          QMessageBox::critical(this, tr("Ocurrió un error al extraer todo"), tr("Ocurrió un error al crear el archivo \"%1\". Intenta extraerlo en otro lado.").arg(output));
           return false;
         }
       }
@@ -311,7 +311,7 @@ bool MainWindow::SaveFile()
     if (r == Interleaf::ERROR_SUCCESS) {
       return true;
     } else {
-      QMessageBox::critical(this, QString(), tr("Failed to write SI file: %1").arg(r));
+      QMessageBox::critical(this, QString(), tr("Ocurrió un error al escribir el archivo SI: %1").arg(r));
       return false;
     }
   }
@@ -345,7 +345,7 @@ void MainWindow::ShowContextMenu(const QPoint &p)
 {
   QMenu menu(this);
 
-  QAction *extract_action = menu.addAction(tr("E&xtract"));
+  QAction *extract_action = menu.addAction(tr("E&xtraer"));
   connect(extract_action, &QAction::triggered, this, &MainWindow::ExtractSelectedItems);
 
   menu.exec(static_cast<QWidget*>(sender())->mapToGlobal(p));
@@ -392,14 +392,14 @@ void MainWindow::ViewSIFile()
 
 void MainWindow::ExtractAll()
 {
-  QString s = QFileDialog::getExistingDirectory(this, tr("Extract All To..."));
+  QString s = QFileDialog::getExistingDirectory(this, tr("Extraer todo a..."));
   if (s.isEmpty()) {
     return;
   }
 
   QDir dir(s);
   if (!dir.exists()) {
-    QMessageBox::critical(this, tr("Extract All Failed"), tr("Directory \"%1\" is not valid. Try extracting somewhere else.").arg(s));
+    QMessageBox::critical(this, tr("Ocurrió un error al extraer todo"), tr("El directorio \"%1\" no es válido. Intenta extraerlo en otro lado.").arg(s));
     return;
   }
 

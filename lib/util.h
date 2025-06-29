@@ -15,7 +15,7 @@ inline std::ostream &LogDebug()
 
 inline std::ostream &LogWarning()
 {
-  return std::cerr << "[WARNING] ";
+  return std::cerr << "[ADVERTENCIA] ";
 }
 
 inline std::ostream &LogError()

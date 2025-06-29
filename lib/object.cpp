@@ -148,7 +148,7 @@ bool Object::ReplaceWithFile(FileBase *f)
     return true;
   }
   default:
-    LogWarning() << "Don't yet know how to chunk type " << RIFF::PrintU32AsString(this->filetype()) << std::endl;
+    LogWarning() << "Aún no sabemos cómo procesar el tipo de chunk " << RIFF::PrintU32AsString(this->filetype()) << std::endl;
     break;
   }
 
@@ -228,7 +228,7 @@ bool Object::ExtractToFile(FileBase *f) const
     break;
   }
   default:
-    LogWarning() << "Didn't know how to extract type '" << RIFF::PrintU32AsString(filetype()) << "', merging..." << std::endl;
+    LogWarning() << "No supe cómo extraer el tipo '" << RIFF::PrintU32AsString(filetype()) << "', fusionando..." << std::endl;
     /* fall-through */
   case MxOb::SMK:
   case MxOb::OBJ:

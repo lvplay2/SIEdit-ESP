@@ -88,19 +88,19 @@ Interleaf::Error Interleaf::ReadChunk(Core *parent, FileBase *f, Info *info)
       return ERROR_INVALID_INPUT;
     }
 
-    desc << "Type: " << RIFF::PrintU32AsString(riff_type);
+    desc << "Tipo: " << RIFF::PrintU32AsString(riff_type);
     break;
   }
   case RIFF::MxHd:
   {
     m_Version = f->ReadU32();
-    desc << "Version: 0x" << std::hex << m_Version << std::endl;
+    desc << "Versión: 0x" << std::hex << m_Version << std::endl;
 
     m_BufferSize = f->ReadU32();
-    desc << "Buffer Size: 0x" << std::hex << m_BufferSize;
+    desc << "Tamaño del buffer: 0x" << std::hex << m_BufferSize;
 
     m_BufferCount = f->ReadU32();
-    desc << std::endl << "Buffer Count: " << std::dec << m_BufferCount << std::endl;
+    desc << std::endl << "Cantidad de búferes: " << std::dec << m_BufferCount << std::endl;
     break;
   }
   case RIFF::pad_:
@@ -110,7 +110,7 @@ Interleaf::Error Interleaf::ReadChunk(Core *parent, FileBase *f, Info *info)
   {
     uint32_t offset_count = f->ReadU32();
 
-    desc << "Count: " << offset_count;
+    desc << "Cantidad: " << offset_count;
 
     uint32_t real_count = (size - sizeof(uint32_t)) / sizeof(uint32_t);
     m_ObjectList.resize(real_count);
@@ -127,17 +127,17 @@ Interleaf::Error Interleaf::ReadChunk(Core *parent, FileBase *f, Info *info)
   case RIFF::LIST:
   {
     uint32_t list_type = f->ReadU32();
-    desc << "Type: " << RIFF::PrintU32AsString(list_type) << std::endl;
+    desc << "Tipo: " << RIFF::PrintU32AsString(list_type) << std::endl;
     uint32_t list_count = 0;
     if (list_type == RIFF::MxCh) {
       if (m_Version == Version2_1) {
         uint32_t unknown_list_entry = f->ReadU32();
-        desc << "Unknown v2.1 list entry: " << unknown_list_entry << std::endl;
+        desc << "Entrada desconocida en la lista v2.1: " << unknown_list_entry << std::endl;
       }
 
       list_count = f->ReadU32();
       if (list_count == LIST::Act_ || list_count == LIST::RAND) {
-        desc << "Extension: ";
+        desc << "Extensión: ";
         if (list_count == LIST::RAND) {
           uint32_t rand_upper = f->ReadU32();
           uint64_t rand_val = uint64_t(rand_upper) << 32 | list_count;
@@ -156,7 +156,7 @@ Interleaf::Error Interleaf::ReadChunk(Core *parent, FileBase *f, Info *info)
           desc << "  " << ((const char *) &val) << std::endl;
         }
       }
-      desc << "Count: " << list_count << std::endl;
+      desc << "Cantidad: " << list_count << std::endl;
     }
     break;
   }
@@ -199,13 +199,13 @@ Interleaf::Error Interleaf::ReadChunk(Core *parent, FileBase *f, Info *info)
     desc << "Flags: 0x" << std::hex << flags << std::endl;
 
     uint32_t object = f->ReadU32();
-    desc << "Object: " << std::dec << object << std::endl;
+    desc << "Objeto: " << std::dec << object << std::endl;
 
     uint32_t time = f->ReadU32();
-    desc << "Time: " << time << std::endl;
+    desc << "Tiempo: " << time << std::endl;
 
     uint32_t data_sz = f->ReadU32();
-    desc << "Size: " << data_sz << std::endl;
+    desc << "Tamaño: " << data_sz << std::endl;
 
     bytearray data = f->ReadBytes(size - MxCh::HEADER_SIZE);
 
@@ -215,7 +215,7 @@ Interleaf::Error Interleaf::ReadChunk(Core *parent, FileBase *f, Info *info)
     if (!(flags & MxCh::FLAG_END)) {
       std::map<uint32_t, Object*>::iterator it = m_ObjectIDTable.find(object);
       if (it == m_ObjectIDTable.end()) {
-        LogError() << "Failed to find object " << object << " for chunk at " << std::hex << offset << std::dec << std::endl;
+        LogError() << "Ocurrió un error al encontrar el objeto " << object << " para el chunk en " << std::hex << offset << std::dec << std::endl;
         //return ERROR_INVALID_INPUT;
       } else {
         Object *o = it->second;
@@ -281,13 +281,13 @@ Interleaf::Error Interleaf::ReadChunk(Core *parent, FileBase *f, Info *info)
 Object *Interleaf::ReadObject(FileBase *f, Object *o, std::stringstream &desc)
 {
   o->type_ = static_cast<MxOb::Type>(f->ReadU16());
-  desc << "Type: " << o->type_ << std::endl;
+  desc << "Tipo: " << o->type_ << std::endl;
   o->presenter_ = f->ReadString();
-  desc << "Presenter: " << o->presenter_ << std::endl;
+  desc << "Presentador: " << o->presenter_ << std::endl;
   o->unknown1_ = f->ReadU32();
   desc << "Unknown1: " << o->unknown1_ << std::endl;
   o->name_ = f->ReadString();
-  desc << "Name: " << o->name_ << std::endl;
+  desc << "Nombre: " << o->name_ << std::endl;
   o->id_ = f->ReadU32();
   desc << "ID: " << o->id_ << std::endl;
   o->flags_ = f->ReadU32();
@@ -295,21 +295,21 @@ Object *Interleaf::ReadObject(FileBase *f, Object *o, std::stringstream &desc)
   o->unknown4_ = f->ReadU32();
   desc << "Unknown4: " << o->unknown4_ << std::endl;
   o->duration_ = f->ReadU32();
-  desc << "Duration: " << o->duration_ << std::endl;
+  desc << "Duración: " << o->duration_ << std::endl;
   o->loops_ = f->ReadU32();
-  desc << "Loops: " << o->loops_ << std::endl;
+  desc << "Bucles: " << o->loops_ << std::endl;
   o->location_ = f->ReadVector3();
-  desc << "Location: " << o->location_.x << " " << o->location_.y << " " << o->location_.z << std::endl;
+  desc << "Ubicación: " << o->location_.x << " " << o->location_.y << " " << o->location_.z << std::endl;
   o->direction_ = f->ReadVector3();
-  desc << "Direction: " << o->direction_.x << " " << o->direction_.y << " " << o->direction_.z << std::endl;
+  desc << "Dirección: " << o->direction_.x << " " << o->direction_.y << " " << o->direction_.z << std::endl;
   o->up_ = f->ReadVector3();
-  desc << "Up: " << o->up_.x << " " << o->up_.y << " " << o->up_.z << std::endl;
+  desc << "Arriba: " << o->up_.x << " " << o->up_.y << " " << o->up_.z << std::endl;
 
   uint16_t extra_sz = f->ReadU16();
-  desc << "Extra Size: " << extra_sz << std::endl;
+  desc << "Tamaño extra: " << extra_sz << std::endl;
   o->extra_ = f->ReadBytes(extra_sz);
 
-  desc << "Extra Data: ";
+  desc << "Datos extra: ";
   if (o->extra_.size() > 0) {
     desc << o->extra_.data() << std::endl;
   }
@@ -317,7 +317,7 @@ Object *Interleaf::ReadObject(FileBase *f, Object *o, std::stringstream &desc)
 
   if (o->type_ != MxOb::Presenter && o->type_ != MxOb::World && o->type_ != MxOb::Animation) {
     o->filename_ = f->ReadString();
-    desc << "Filename: " << o->filename_ << std::endl;
+    desc << "Nombre de archivo: " << o->filename_ << std::endl;
     o->unknown26_ = f->ReadU32();
     desc << "Unknown26: " << o->unknown26_ << std::endl;
     o->unknown27_ = f->ReadU32();
@@ -325,7 +325,7 @@ Object *Interleaf::ReadObject(FileBase *f, Object *o, std::stringstream &desc)
     o->unknown28_ = f->ReadU32();
     desc << "Unknown28: " << o->unknown28_ << std::endl;
     o->filetype_ = static_cast<MxOb::FileType>(f->ReadU32());
-    desc << "File Type: " << RIFF::PrintU32AsString(o->filetype_) << std::endl;
+    desc << "Tipo de archivo: " << RIFF::PrintU32AsString(o->filetype_) << std::endl;
     o->unknown29_ = f->ReadU32();
     desc << "Unknown29: " << o->unknown29_ << std::endl;
     o->unknown30_ = f->ReadU32();
@@ -357,7 +357,7 @@ void RecursivelyAddObjectToList(std::vector<Object*> *list, Object *o)
 Interleaf::Error Interleaf::Write(FileBase *f) const
 {
   if (m_BufferSize == 0) {
-    LogError() << "Buffer size must be set to write" << std::endl;
+    LogError() << "Debe establecerse el tamaño del búfer para escribir" << std::endl;
     return ERROR_INVALID_BUFFER_SIZE;
   }
 

@@ -16,19 +16,19 @@ const char *MxOb::GetTypeName(Type type)
   case Bitmap:
     return "BMP";
   case Object:
-    return "3D Object";
+    return "Objeto 3D";
   case World:
-    return "World";
+    return "Mundo";
   case Event:
-    return "Event";
+    return "Evento";
   case Animation:
-    return "Animation";
+    return "Animación";
   case Null:
   case TYPE_COUNT:
     break;
   }
 
-  return "Unknown";
+  return "Desconocido";
 }
 
 std::vector<const char*> MxOb::GetFlagsName(Flags flags)
@@ -64,32 +64,32 @@ const char *RIFF::GetTypeDescription(Type t)
   case RIFF_:
     return "Resource Interchange File Format";
   case LIST:
-    return "List of sub-elements";
+    return "Lista de sub-elementos";
   case MxSt:
     return "Stream";
   case MxHd:
-    return "Interleaf Header";
+    return "Encabezado de intercalado";
   case MxCh:
-    return "Data Chunk";
+    return "Chunk de datos";
   case MxOf:
-    return "Offset Table";
+    return "Tabla de Offset";
   case pad_:
-    return "Padding";
+    return "Relleno";
   case MxOb:
-    return "Streamable Object";
+    return "Objeto transmitible";
   case MxDa:
-    return "Data";
+    return "Datos";
   case WAVE:
     return "WAVE";
   case fmt_:
-    return "WAVE Format";
+    return "Formato WAVE";
   case OMNI:
     return "OMNI";
   case data:
-    return "WAVE Data";
+    return "Datos WAVE";
   }
 
-  return "Unknown";
+  return "Desconocido";
 }
 
 RIFF::Chk RIFF::BeginChunk(FileBase *f, uint32_t type)

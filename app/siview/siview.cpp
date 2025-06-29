@@ -45,9 +45,9 @@ void SIViewDialog::SetSubtitle(const QString &s)
 {
   QString t;
   if (s.isEmpty()) {
-    t = tr("View SI File");
+    t = tr("Ver archivo SI");
   } else {
-    t = tr("View SI File: %1").arg(s);
+    t = tr("Ver archivo SI: %1").arg(s);
   }
   setWindowTitle(t);
 }

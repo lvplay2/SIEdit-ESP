@@ -25,29 +25,29 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Install Developer Command Prompt for Microsoft Visual C++
+    - name: Instalar Developer Command Prompt for Microsoft Visual C++
       uses: ilammy/msvc-dev-cmd@v1
 
-    - name: Install Qt
+    - name: Instalar Qt
       uses: jurplel/install-qt-action@v4
       with:
         version: '6.9'
         arch: 'win64_msvc2022_64'
         modules: 'qtmultimedia'
 
-    - name: Install FFmpeg
+    - name: Instalar FFmpeg
       shell: bash
       run: |
         curl -fLOSs https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-2025-01-31-12-58/$FFMPEG_DIR.zip
         7z x $FFMPEG_DIR.zip
 
-    - name: Build
+    - name: Compilar
       shell: bash
       run: |
         cmake . -G Ninja -DCMAKE_BUILD_TYPE=Release -DFFMPEG_ROOT=$FFMPEG_DIR
         ninja
 
-    - name: Deploy
+    - name: Distribuir
       shell: bash
       run: |
         mkdir deploy
@@ -57,13 +57,13 @@ jobs:
         cd deploy
         windeployqt si-edit.exe libweaver.dll
 
-    - name: Upload Build Artifact
+    - name: Subir artefacto de la build
       uses: actions/upload-artifact@v4
       with:
         path:
           deploy
 
-    - name: Upload to Releases
+    - name: Subir a Releases
       shell: bash
       if: github.event_name == 'push'
       env:
